@@ -1,0 +1,55 @@
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>끝말잇기</title>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <div><span id="order">1</span>번째 참가자</div>
+  <div>제시어: <span id="word"></span></div>
+  <input type="text">
+  <button>입력</button>
+  <script>
+    const number = Number(prompt('몇 명이 참가하나요?'));
+    const $button = document.querySelector('button');
+    const $input = document.querySelector('input');
+    const $word = document.querySelector('#word');
+    const $order = document.querySelector('#order');
+    let word; // 제시어
+    let newword; // 세로 입력한 단어
+
+    const onClickButton = () => {
+      if (!word || word[word.length - 1] === newword[0]) { // 제시어가 비어 있는가
+        // 또는 제시어의 끝자리가 새로 입력한 단어의 첫자리와 같는가
+        word = newword; // 입력한 단어가 제시어가 된다.
+        $word.textContent = word; // 제시어에 word가 들어간다.
+        const order = Number($order.textContent); // 현재 순서
+        if (order + 1 > number) { // 현재 순서가 number(참가자 수)보다 클 때 
+          $order.textContent = 1;
+        } else { // 아닐 때
+          $order.textContent = order + 1
+        }
+
+      } else { // 입력한 단어가 올바르지 않은가
+          alert('올바르지 않은 단어입니다.');
+      }
+      $input.value = ''; // 입력하고 난 후에 입력 칸을 공란으로 만든다.
+      $input.focus(); // 커서가 입력창에 가게 함.
+    }
+
+    const onInput = (event) => {
+      newword = event.target.value;
+    }
+
+    $button.addEventListener('click', onClickButton);
+    $input.addEventListener('input', onInput);
+  </script>
+</body>
+
+</html>
