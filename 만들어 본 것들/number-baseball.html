@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>숫자야구</title>
+</head>
+<body>
+  <form id="form"> 
+    <input type="text" id="input">
+    <button>확인</button>
+  </form>
+  <div id="logs"></div>
+  <script>
+    const $input = document.querySelector('#input');
+    const $form = document.querySelector('#form');
+    const $logs = document.querySelector('#logs');
+
+    const numbers = []; // 배열 1~9까지
+    for (let n = 0; n < 9; n += 1) {
+      numbers.push(n + 1);
+    }
+    const answer = []; // 중복X 숫자 4개 뽑기
+    for (let n = 0; n < 4; n += 1) {
+      const index = Math.floor(Math.random() * numbers.length);
+      answer.push(numbers[index]);
+      numbers.splice(index, 1);
+    }
+    console.log(answer);
+
+    const tries = [];
+    function checkInput(input) {
+      if (input.length !== 4) { // 입력한 숫자가 4자리인가?
+        return alert('4자리 숫자를 입력해 주세요.'); // alert의 리턴값은 undefined
+      }
+      if (new Set(input).size !== 4) { // 입력한 숫자중에 중복을 제외한 크기가 4인가?
+        return alert('중복되지 않게 입력해 주세요.');
+      }
+      if (tries.includes(input)) { // 이미 시도한 값은 아닌가?
+        return alert('이미 시도한 값입니다..');
+      }
+      return true;
+    } // 검사하는 코드
+
+    $form.addEventListener('submit', (event) => {
+      event.preventDefault(); // form태그의 기본 동작인 새로고침 막기
+      const value = $input.value;
+      $input.value = ''; // 편의상 다음값 입력하기 편하도록 공백으로 만들어줌.
+      if (!checkInput(value)) { // 입력값 문제 있음
+        return;
+      } 
+      if (answer.join('') === value) {
+        $logs.textContent = '홈련!';
+        return;
+      }
+      if (tries.length >= 9) {
+        const message = document.createTextNode(`패배! 정답은 ${answer.join('')}`); // 역따옴표
+        $logs.appendChild(message); // 꼭 변수선언 안하고 넣어도 됨.
+        return;
+      }
+    // 몇 스트라이크 몇 볼인지 검사
+      let strike = 0;
+      let ball = 0;
+      for (let i = 0; i < answer.length; i++) {
+        const index = value.indexOf(answer[i]);
+        if (index > -1) {
+          if (index === i) {
+            strike += 1;
+          } else {
+            ball += 1;
+          }
+        }
+      }
+      $logs.append(`${value}: ${strike} 스트라이크 ${ball} 볼`, document.createElement('br')); // appendChild는 거의 쓰지 않음.
+      tries.push(value);
+    });
+  </script>
+</body>
+</html>
